@@ -29,11 +29,27 @@ document.addEventListener('DOMContentLoaded', () => {
           appointmentsContainer.innerHTML = '';
           response.data.forEach(appointment => {
             const div = document.createElement('div');
-            div.innerHTML = `<strong>${appointment.name}</strong> - ${appointment.date}`;
+            div.innerHTML = `<span>${appointment.name} - ${appointment.date}</span><button class="delete-btn" data-id="${appointment._id}">Delete</button>`;
             appointmentsContainer.appendChild(div);
+          });
+  
+          const deleteButtons = document.querySelectorAll('.delete-btn');
+          deleteButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+              const appointmentId = btn.getAttribute('data-id');
+              deleteAppointment(appointmentId, btn.parentNode);
+            });
           });
         })
         .catch(error => console.error('Error fetching appointments:', error));
+    }
+  
+    function deleteAppointment(appointmentId, appointmentElement) {
+      axios.delete(`https://crudcrud.com/api/YOUR_CRUDCRUD_API_ENDPOINT/${appointmentId}`)
+        .then(() => {
+          appointmentElement.remove();
+        })
+        .catch(error => console.error('Error deleting appointment:', error));
     }
   
     fetchAppointments();
